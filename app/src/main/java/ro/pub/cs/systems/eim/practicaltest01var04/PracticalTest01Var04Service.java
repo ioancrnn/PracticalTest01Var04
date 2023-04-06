@@ -13,16 +13,14 @@ public class PracticalTest01Var04Service extends Service {
         return null;
     }
 
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        int left= intent.getIntExtra("leftText", 0);
-        int right = intent.getIntExtra("rightText", 0);
+        String name  = intent.getStringExtra("editName");
+        String group = intent.getStringExtra("editGroup");
 
-//        ProcessingThread processingThread = new ProcessingThread(this, left, right);
-//        processingThread.start();
+        ProcessingThread processingThread = new ProcessingThread(this, name, group);
+        processingThread.start();
 
         return Service.START_REDELIVER_INTENT;
     }
-
 }

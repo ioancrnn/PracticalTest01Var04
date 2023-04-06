@@ -22,13 +22,9 @@
         </activity>
         <activity
             android:name=".PracticalTest01Var04SecondaryActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.SECONDARY" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="false" />
+        <service android:name=".PracticalTest01Var04Service"
+            android:exported="true"/>
     </application>
 
 </manifest>

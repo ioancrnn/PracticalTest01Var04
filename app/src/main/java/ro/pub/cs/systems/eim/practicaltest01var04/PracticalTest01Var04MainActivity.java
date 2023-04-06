@@ -3,8 +3,12 @@ package ro.pub.cs.systems.eim.practicaltest01var04;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -28,7 +32,24 @@ public class PracticalTest01Var04MainActivity extends AppCompatActivity {
     String name;
     String group;
 
+    private class MessageBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(Constants.BROADCAST_RECEIVER_EXTRA, intent.getStringExtra(Constants.BROADCAST_RECEIVER_EXTRA));
+        }
+    }
 
+    private MessageBroadcastReceiver messageBroadcastReceiver = new MessageBroadcastReceiver();
+    private IntentFilter intentFilter = new IntentFilter();
+
+    private void startPracticalTestService() {
+        if (editName != null && editGroup != null) {
+            Intent intent = new Intent(getApplicationContext(), PracticalTest01Var04Service.class);
+            intent.putExtra("editName", editName.getText().toString());
+            intent.putExtra("editGroup", editGroup.getText().toString());
+            getApplicationContext().startService(intent);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,14 +78,21 @@ public class PracticalTest01Var04MainActivity extends AppCompatActivity {
         displayText = findViewById(R.id.displayed_information);
         display_information_button.setOnClickListener(it -> {
             displayText.setText(String.valueOf(name + " " + group));
-            if (checkBoxGroupState) {
+            if (checkBoxNameState) {
                 name = editName.getText().toString();
+            }
+            else {
+                Toast.makeText(this, "set name value", Toast.LENGTH_LONG).show();
+            }
+            if (checkBoxGroupState) {
                 group = editGroup.getText().toString();
-                displayText = findViewById(R.id.displayed_information);
+
             }
             else {
                 Toast.makeText(this, "set group value", Toast.LENGTH_LONG).show();
             }
+            displayText = findViewById(R.id.displayed_information);
+            startPracticalTestService();
         });
 
 
@@ -75,14 +103,32 @@ public class PracticalTest01Var04MainActivity extends AppCompatActivity {
             startActivityForResult(intent, 1);
         });
 
-//        navigateToSecondaryActivityButton.setOnClickListener(it -> {
-//            Intent intent = new Intent(getApplicationContext(), PracticalTest01SecondaryActivity.class);
-//            intent.putExtra(Constants.LEFT_TEXT, leftClicks);
-//            intent.putExtra(Constants.RIGHT_TEXT, rightClicks);
-//            startActivityForResult(intent, Constants.REQUEST_CODE);
-//        });
+        for (String action : Constants.actionTypes) {
+            intentFilter.addAction(action);
+        }
+
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(messageBroadcastReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(messageBroadcastReceiver);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Intent intent = new Intent(getApplicationContext(), PracticalTest01Var04Service.class);
+        getApplicationContext().stopService(intent);
+    }
+
 
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
