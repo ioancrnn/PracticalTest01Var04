@@ -12,10 +12,19 @@
         android:theme="@style/Theme.PracticalTest01Var04"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".PracticalTest01Var04MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".PracticalTest01Var04SecondaryActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SECONDARY" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
